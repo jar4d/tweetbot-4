@@ -1,0 +1,63 @@
+<head>
+  <title>tweetbot3</title>
+</head>
+
+<body>
+{{>nav}}
+
+  {{> stats}}
+
+  {{> buttons}}
+
+  {{> twitterData}}
+
+</body>
+
+<template name="buttons">
+  	<button id="get">Get tweets</button>
+	<button id="clear">Clear tweet cache</button>
+	<button id="retweetAndFriend">retweetAndFriend</button>
+	<button id="cleanRetweets">cleanRetweets</button>
+	<button id="go">Go</button>
+
+</template>
+
+<template name="twitterData">
+  <div class="table-responsive">
+  <table class="table table-striped">
+	  <thead>
+	  	<th>Created</th>  
+	  	<th>Originator</th>
+	  	<th>Message</th>  	
+	  </thead>
+	  <tbody>
+		  {{#each twitterDataDump}}
+		  	<tr>
+			  	<td>{{createdAt}}</td>	
+			  	<td>{{tweetOriginatorUN}}</td>
+			  	<td>{{tweetMessage}}</td>
+		  	</tr>
+		{{/each}}
+	  </tbody>
+    </table>
+</div>
+</template>
+
+<template name="stats">
+	<div># Followers </div>
+	<div># Following </div>
+	<div># Retweets </div>
+	<div># DMs </div>
+</template>
+
+<template name="nav">
+<nav class="navbar navbar-inverse">
+	<div class="container-fluid">
+	<div class="navbar-header">
+      <ul class="nav navbar-nav">
+      <li><a class="navbar-brand" href="/">Tweetbot!</a></li>
+      </ul>
+	</div>
+	</div>
+</nav>
+</template>
