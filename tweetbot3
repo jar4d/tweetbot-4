@@ -60,7 +60,7 @@ Meteor.methods({
         goFunction()
 
           ,5000);
-    }
+    } 
 
 
   },
