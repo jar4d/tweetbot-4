@@ -14,14 +14,14 @@ T = new Twit({
 });
 
 Meteor.methods({
+	scrapeContactsMethod: function(scrapeScreenName, scrapeResults){
+	 scrapeContacts(scrapeScreenName, scrapeResults);
 
+	}
 });
 
 Meteor.startup(function(){
-
-	//scrapeContacts(scrapeScreenName, scrapeResults);
-	//getProfile(profileScreenName);
-	create();
+	getProfile(profileScreenName);
 });
 
 
@@ -36,7 +36,7 @@ function create(){
 	}else
 	{
 	addScrapedFriend(scrapeId);
-
+	cleanFriendsLoop();
 	}
 
 
@@ -56,9 +56,13 @@ var friends = Tweets.find({friends:{$exists:true}}).friends;
 for(var i = 0; i < friends.length; i++){
 	var compare = Tweets.find({followers:friends[i]});
 	//finds whether a friend is also a follower.
-	if(compare.length === 0){//no match
+	if(compare.length === 0){//no match, not a follower
+		destroyId = friends[i];
+		cleanFriends(destroyId);
+	}else{//is a follower. 
 
 	}
+
 
 
 }
@@ -82,6 +86,7 @@ T.get('users/show', { screen_name:profileScreenName},
        future.return( response );
 
        var parsedData = ({   
+       	'screen_name': data.screen_name,
         'id': data.id,
 		'description': data.description,    
         'favourites_count': data.favourites_count,
@@ -91,7 +96,7 @@ T.get('users/show', { screen_name:profileScreenName},
         'profile_background_image_url': data.profile_background_image_url,
         'profile_image_url': data.profile_image_url,
         });
-        Tweets.insert(parsedData);
+        Profile.insert(parsedData);
         console.log("updated profile");  
        console.log(parsedData);
       
