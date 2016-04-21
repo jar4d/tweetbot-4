@@ -15,10 +15,20 @@
                       <li><a href="/index" class="brand-logo">BotBot</a></li>
                     </ul>
 
-                      <ul class="right">
-                            <li class="no-hover"><a href="/">Running</a></li>                              
-                            <li class="no-hover pink accent-2"><a href="/">Stopped</a></li>        
-                      </ul>                      
+                      <!--<ul class="right">
+                            <li class={{runninghighlight}}><a class="go" href="#">Running</a></li>-->
+                          <ul class="right">
+                            <li>  <div class="switch">
+                                <label class="white-text pink-background">
+                                  Off
+                                  <input type="checkbox" class="runScriptSwitch">
+                                  <span class="lever"></span>
+                                  On
+                                </label >
+                              </div>
+                            </li>
+                          </ul>
+                            <!--<li class={{stoppedhighlight}}><a class="stop" href="/">Stopped</a></li>   -->     
                       <ul id="slide-out" class="side-nav">
                             <li><a href="/">Home</a></li>
 

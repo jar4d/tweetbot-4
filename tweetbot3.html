@@ -7,9 +7,10 @@
 {{>profile}}
 {{>grow}}
 {{>track}}
-
 </div>
-
+<div class="row">	
+{{>map}}
+</div>
 </body>
 
 <template name="grow">
@@ -28,6 +29,7 @@
         <button class="btn pink" type="submit" name="action">Go
 		</button>
 	</form>
+	<div><br>[{{scrapeIdQuantity}}] profiles remain</div>
    </div>
    </div>
 </div>
@@ -62,16 +64,31 @@
    <h5>track</h5>
    </div>
    <div class="card-content">
-	<form class="addScrape">
-		Add a username to scrape
-        <input type="text" name="scrapeScreenName" placeholder="Username" />
-        how many IDs do you want?
-        <input type="text" name="scrapeResults" placeholder="100" />
-        <button class="btn pink" type="submit" name="action">Go
-		</button>
-	</form>
+	<ul>
+		<li>Friends in DB: {{friendsDBDetails}}</li>
+		<li>Followers in DB: {{followersDBDetails}}</li>
+		<li>Scraped in DB: {{scrapedDetails}}</li>
+
+	</ul>
    </div>
    </div>
 </div>
 
+</template>
+
+
+<template name="map">
+	<div class="col s12 m12 l12">
+	<div class="card">
+	   <div class="card-title grey darken-3 white-text">
+	   		<h5>Audience distribution</h5>
+	   </div>
+      	<div class="card-content">
+	  		<div class="map-container">
+	    		{{> googleMap name="exampleMap" options=exampleMapOptions}}
+	  		</div>
+  		</div>
+
+	</div>
+	</div>
 </template>
