@@ -1,0 +1,59 @@
+<template name="navTemplate">
+
+<header>
+   <!-- start header nav-->
+            <nav class="cyan">
+                <div class="nav-wrapper">                    
+                    
+                    <ul class="left">
+
+
+<!-- USE THIS STUFF IN SIDE MENU..... -->
+                      <li class="no-hover">
+                        <a href="#" data-activates="slide-out" class="sideMenuButton"><i class="mdi-navigation-menu"></i></a>
+                      </li>
+                      <li><a href="/index" class="brand-logo">BotBot</a></li>
+                    </ul>
+
+                      <ul class="right">
+                            <li class="no-hover"><a href="/">Running</a></li>                              
+                            <li class="no-hover pink accent-2"><a href="/">Stopped</a></li>        
+                      </ul>                      
+                      <ul id="slide-out" class="side-nav">
+                            <li><a href="/">Home</a></li>
+
+                        {{#if currentUser}}
+                            <li class="no-hover pink accent-2"><a href="#!">You're signed in</a></li>
+                            <li><a href="/profile">Profile</a></li>  
+
+                        {{else}}    
+                            <li class="no-hover pink accent-2"><a href="#!">Sign in to post</a></li>     
+
+                            <li><a href="/login">Login</a></li>
+                            <li><a href="/register">Register</a></li>
+                        {{/if}}                                   
+                        <li><a href="#" class="logout">Logout</a></li>
+   
+                      </ul>
+
+
+
+
+
+
+
+                </div>
+            </nav>
+
+
+
+
+
+
+
+
+
+
+</header>
+
+</template>

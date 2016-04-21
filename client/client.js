@@ -1,4 +1,4 @@
-Template.addScrapedFriends.events({
+Template.grow.events({
   'submit .addScrape'(event) {
     // Prevent default browser form submit
     event.preventDefault();
@@ -16,6 +16,6 @@ Template.addScrapedFriends.events({
 
 Template.profile.helpers({
   profileDetails: function(){
-    return Profile.find().fetch();
+    return Profile.findOne();
   } 
 });

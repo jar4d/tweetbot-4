@@ -1,1 +1,28 @@
 /* CSS declarations go here */
+.profile-card .card-image {
+  height: 150px;
+  overflow: hidden;
+
+}
+.profile-card .card-content p {
+  margin: 10px 0 10px 0;
+}
+.profile-card .card-profile-image {
+  width: 70px;
+  position: absolute;
+  top: 110px;
+  z-index: 1;
+  cursor: pointer;
+}
+
+.card-title {
+  padding: 2px;
+}
+
+.card {
+	  height: 350px;
+}
+
+.profile-card {
+	  height: 350px;
+}

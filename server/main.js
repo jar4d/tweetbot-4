@@ -93,7 +93,7 @@ T.get('users/show', { screen_name:profileScreenName},
         'followers_count': data.followers_count,
         'friends_count': data.friends_count,
         'listed_count': data.listed_count,
-        'profile_background_image_url': data.profile_background_image_url,
+        'profile_banner_url': data.profile_banner_url,
         'profile_image_url': data.profile_image_url,
         });
         Profile.insert(parsedData);
