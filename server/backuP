@@ -1,6 +1,7 @@
 var Future = Npm.require( 'fibers/future' ); 
 var Twit = Meteor.npmRequire('twit');
-//var randomTime = 5000;
+//var randomTime = (1000 * 60 * 3) + (Math.random()* 1000 * 60 * 2) + (Math.random() * 100);
+var randomTime = 5000;
 
 
  profileScreenName = "anecdotalUK";
@@ -36,21 +37,26 @@ Meteor.startup(function(){
         });
         Profile.insert(parsedData);
 
+         var parsedData2 = ({       
+              'destroyId':null    
+            });
+         UnfollowDB.insert(parsedData2);
+
   getProfile(profileScreenName);
 
-/*
+  
   Meteor.setTimeout(function(){getProfile(profileScreenName)},1000);
   Meteor.setTimeout(function(){getFriends(profileScreenName)},5000);
   Meteor.setTimeout(function(){getFollowers(profileScreenName)},10000);
   Meteor.setTimeout(function(){  compareFriendsFollowers()},15000);
-*/      
+      
 
 
   
 
 
-  //refresh profile every 60 mins
-  Meteor.setInterval(function(){getProfile(profileScreenName);}, 1000*60*60);
+  //refresh profile every 5 mins
+  Meteor.setInterval(function(){getProfile(profileScreenName);}, 1000*60*5);
 
 
 });
@@ -60,17 +66,10 @@ Meteor.methods({
 	 scrapeContacts(scrapeScreenName, scrapeResults);
 	},
   go: function(){
-      console.log("running scripts...");      
-      
-      var randomTime = (1000 * 60 * 2) + (Math.random()* 1000 * 60 * 2) + (Math.random() * 100);
-
-
+      console.log("running scripts...");        
       createInterval = Meteor.setInterval(function(){
                                                       create();
                                                     }, randomTime);
-      cleanInterval = Meteor.setInterval(function(){
-                                                    cleanFriends();
-                                                  }, randomTime);
       cleanInterval = Meteor.setInterval(function(){
                                                     cleanFriends();
                                                   }, randomTime);
@@ -82,25 +81,34 @@ Meteor.methods({
   }
 });
 
+function getEverything(){
+
+
+
+
+}
+
+
+
+
 
 function compareFriendsFollowers(){
-console.log("4/4 RUNNING compareFriendsFollowers");
 //find all following
 // friends we follow, followers follow us
-var followers = Tweets.find({},{followers: {$exists:true}}, {$sort:{$natural:1}}).fetch();
-var friends = Tweets.find({},{friends: {$exists:true}}, {$sort:{$natural:1}}).fetch();
-//console.log("followers: ", followers);
-//console.log("friends: ", friends);
-  for(var i = 0; i < friends.length; i++){
+var followers = Tweets.find({},{followers: {$exists:true}});
+var friends = Tweets.find({friends:{$exists:true}});
+console.log("followers: ", followers);
+console.log("friends: ", friends);
+  for(var i = 0; i < friends; i++){
     //console.log("CleanFriends", [i]);
-    var compare = Tweets.find({followers:friends[i]}).fetch();
+    var compare = Tweets.find({followers:friends[i]});
     //finds whether a friend is also a follower.
       if(compare.length === 0){//no match, not a follower
         var destroyId = friends[i];
         console.log("added destroyId to UnfollowDB: ", destroyId);
         //not a follower, so we add to the unfollow database
          var parsedData = ({       
-              'destroyId':destroyId.friends    
+              'destroyId':destroyId    
             });
          UnfollowDB.insert(parsedData);
       }else{//is a follower. 
@@ -124,8 +132,6 @@ function create(){
 }
 
 function getProfile(profileScreenName){
-    console.log("1/4 RUNNING GETPROFILE");
-
 var future = new Future();
 T.get('users/show', { screen_name:profileScreenName},  
     Meteor.bindEnvironment(function(error, data, response ) {
@@ -150,9 +156,7 @@ T.get('users/show', { screen_name:profileScreenName},
         Profile.update({profileID:"1"}, parsedData);
         console.log("updated profile");  
        console.log(parsedData);
-          
-        getFriends();
-
+      
         }
       
     })
@@ -190,8 +194,6 @@ T.get('followers/ids', { screen_name:scrapeScreenName, count: scrapeResults},
 }
 
 function getFriends(profileScreenName){ //will only work up to 5000
-console.log("2/4 RUNNING GETFRIENDS");
-
 var future = new Future();
 T.get('friends/ids', { screen_name:profileScreenName},  
     Meteor.bindEnvironment(function(error, data, response ) {
@@ -212,8 +214,6 @@ T.get('friends/ids', { screen_name:profileScreenName},
 	            Tweets.insert(parsedData);
 	            console.log("inserted new friend", data.ids[i] );  
               }
-          getFollowers();
-
         }
       
     })
@@ -222,7 +222,6 @@ T.get('friends/ids', { screen_name:profileScreenName},
 }
 
 function getFollowers(profileScreenName){ //will only work up to 5000
-console.log("3/4 RUNNING GETFOLLOWERS");
 var future = new Future();
 T.get('followers/ids', { screen_name:profileScreenName},  
     Meteor.bindEnvironment(function(error, data, response ) {
@@ -242,14 +241,12 @@ T.get('followers/ids', { screen_name:profileScreenName},
 	            });
 	            console.log("retrieved follower", data.ids[i] );  
               }
-
-              compareFriendsFollowers();
-
         }
       
     })
 )
     return future.wait();
+
 }
 
 function addScrapedFriend(scrapeId){
@@ -257,7 +254,7 @@ console.log("running addScrapedFriend");
 
 var future = new Future();
 
-T.post('friendships/create', {user_id: scrapeId, follow: true},  
+T.post('friendships/create', {user_id: scrapeId},  
     Meteor.bindEnvironment(function(error, data, response ) {
       if(error){
         future.return( error );
@@ -280,22 +277,19 @@ return future.wait();
 function cleanFriends(){
 var future = new Future();
 console.log("cleanFriends");
-var UnfollowDBId = UnfollowDB.findOne({},{$sort:{$natural:1}}); //{sort: {date_created: -1}}
-//Tweets.find({},{followers: {$exists:true}}, {$sort:{$natural:1}}).fetch();
+var UnfollowDBId = UnfollowDB.findOne({}); //{sort: {date_created: -1}}
 
 T.post('friendships/destroy', {user_id: UnfollowDBId.destroyId},  
     Meteor.bindEnvironment(function(error, data, response ) {
       if(error){
         future.return( error );
         console.log("couldnt remove friend", error);
-        UnfollowDB.remove({'destroyId':UnfollowDBId.destroyId});
-
 
       } else if(!error && 200 == response.statusCode){
        console.log(data);
        future.return( response );
         console.log("Removed a friend", data.screen_name);
-        UnfollowDB.remove({'destroyId':UnfollowDBId.destroyId});
+        UnfollowDB.remove({'destroyId':destroyId});
         }
       
     })

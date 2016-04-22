@@ -47,8 +47,10 @@ Template.track.helpers({
      var databaseDetails = Tweets.find({followers: {$exists:true}},{}).count();
      return databaseDetails;
   },
+
 });
 
+Template.navTemplate.events({
 
 'change .runScriptSwitch': function(event) {
   console.log("switch");
@@ -62,9 +64,9 @@ Template.track.helpers({
   }
  }
 
-
-
 });
+
+
 
 Template.navTemplate.helpers({
   runninghighlight: function(){

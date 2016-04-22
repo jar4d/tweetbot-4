@@ -25,3 +25,4 @@ npm-container
 twbs:bootstrap
 materialize:materialize
 dburles:google-maps
+deanius:promise
