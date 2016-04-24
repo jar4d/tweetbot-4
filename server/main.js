@@ -5,14 +5,14 @@ var Twit = Meteor.npmRequire('twit');
 
  profileScreenName = "anecdotalUK";
  scrapeScreenName = "jar4d";
- scrapeResults = 10;
+ scrapeResults = 100;
  stopped = true;
 
 T = new Twit({
-  consumer_key:         'WRIK81ClYsbHpNk6hApkzaEBm', // API key
-  consumer_secret:      '9W0LZcRJJjoieQFxRrnEeqsMzmNz2jCZNOkxDYwdpd941T1Qm2', // API secret
-  access_token:         '719959002831069186-j20omPs6bpFXlAfuoINZl8WTQgp1T18', 
-  access_token_secret:  'sIPy4O6lT1bEnhu4rFVPiJwmHx9Ry1f6wktBlLzR2pPdB'
+  consumer_key:         'comYuF8iiRr3MP8L3sDejdh3E', // API key
+  consumer_secret:      'C4UjNhK3Lqlhoc7ivz7BlPG11ABXaorNXPYJsGvuXiPat9EHSX', // API secret
+  access_token:         '719959002831069186-xKH9fEjKRQiJRoSMIfAURyhRnFfkxdm', 
+  access_token_secret:  'yIRPcoovPNHcfOG8Q1NEhnIV9sZfYrvLBWg82ggDsDcFq'
 });
 
 Meteor.startup(function(){
@@ -62,7 +62,12 @@ Meteor.methods({
   go: function(){
       console.log("running scripts...");      
       
-      var randomTime = (1000 * 60 * 2) + (Math.random()* 1000 * 60 * 2) + (Math.random() * 100);
+      //while (0){
+
+        //}
+
+
+      var randomTime = (1000 * 60 * 4) + (Math.random()* 1000 * 60 * 2) + (Math.random() * 100);
 
 
       createInterval = Meteor.setInterval(function(){
@@ -70,10 +75,10 @@ Meteor.methods({
                                                     }, randomTime);
       cleanInterval = Meteor.setInterval(function(){
                                                     cleanFriends();
-                                                  }, randomTime);
+                                                  }, 1000 * 60 * 4);
       cleanInterval = Meteor.setInterval(function(){
                                                     cleanFriends();
-                                                  }, randomTime);
+                                                  }, 1000 * 60 * 4);
   },
   stop: function(){
       console.log("running clear interval scripts...");    
