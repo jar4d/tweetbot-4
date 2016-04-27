@@ -1,5 +1,5 @@
   //key: 'AIzaSyC3H26C2RdRAtczTYqlLariqlDbFscfkyY'
-var goStop = stop;
+var x = false;
 
   Meteor.startup(function() {
     GoogleMaps.load();
@@ -19,6 +19,10 @@ var goStop = stop;
     // Clear form
     target.scrapeScreenName.value = '';
   },
+  'click .purge': function(){
+    Scraped.remove({});
+  }
+
 });
 
 Template.profile.helpers({
@@ -68,25 +72,7 @@ Template.navTemplate.events({
 
 
 
-Template.navTemplate.helpers({
-  runninghighlight: function(){
-    var goStop = !goStop;
-    Session.set('goStop', goStop);
-    if(Session.get('goStop')){
-      return "no-hover pink accent-2";
-    }else{
-      return "no-hover"
-    }
-  },
-  stoppedhighlight: function(){
-    if(!Session.get('goStop')){
-      return "no-hover pink accent-2";
-    }else{
-      return "no-hover"
-    }
-  }
 
-});
 
 
 

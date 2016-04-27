@@ -6,35 +6,13 @@
 {{>navTemplate}}
 {{>profile}}
 {{>grow}}
+{{>favourite}}
 {{>track}}
 </div>
 <div class="row">	
 {{>map}}
 </div>
 </body>
-
-<template name="grow">
-
-   <div class="col s2 m4 l3">
-   <div class="card">
-   <div class="card-title blue white-text">
-   <h5>Grow</h5>
-   </div>
-   <div class="card-content">
-	<form class="addScrape">
-		Add a username to scrape
-        <input type="text" name="scrapeScreenName" placeholder="Username" />
-        how many IDs do you want?
-        <input type="text" name="scrapeResults" placeholder="100" />
-        <button class="btn pink" type="submit" name="action">Go
-		</button>
-	</form>
-	<div><br>[{{scrapeIdQuantity}}] profiles remain</div>
-   </div>
-   </div>
-</div>
-
-</template>
 
 <template name="profile">
 
@@ -55,21 +33,70 @@
 </div>
 
 </template>
+<template name="grow">
 
-<template name="track">
-
-   <div class="col s2 m4 l6">
+   <div class="col s2 m4 l3">
    <div class="card">
-   <div class="card-title purple white-text">
-   <h5>track</h5>
+   <div class="card-title blue white-text">
+   <h5>Grow</h5>
    </div>
    <div class="card-content">
-	<ul>
-		<li>Friends in DB: {{friendsDBDetails}}</li>
-		<li>Followers in DB: {{followersDBDetails}}</li>
-		<li>Scraped in DB: {{scrapedDetails}}</li>
+	<form class="addScrape">
+		Add a username to scrape
+        <input type="text" name="scrapeScreenName" placeholder="Username" />
+        how many IDs do you want?
+        <input type="text" name="scrapeResults" placeholder="100" />
+        <button class="btn pink" type="submit" name="action">Go</button>
+        <button class="btn grey" name="purge">Purge</button>
+        <div><br>[{{scrapeIdQuantity}}] profiles remain</div>
 
-	</ul>
+	</form>
+   </div>
+   </div>
+</div>
+
+</template>
+
+
+
+<template name="track">
+   <div class="col s2 m4 l3">
+   <div class="card">
+   <div class="card-title purple darken-3 white-text">
+   <h5>Track</h5>
+   </div>
+   <div class="card-content">
+  
+  <ul>
+    <li>Friends in DB: {{friendsDBDetails}}</li>
+    <li>Followers in DB: {{followersDBDetails}}</li>
+    <li>Scraped in DB: {{scrapedDetails}}</li>
+  </ul>
+
+   </div>
+   </div>
+</div>
+
+</template>
+
+<template name="favourite">
+
+   <div class="col s2 m4 l3">
+   <div class="card">
+   <div class="card-title grey darken-3 white-text">
+   <h5>Favourite</h5>
+   </div>
+   <div class="card-content">
+  <form class="addScrape">
+    Enter list name
+        <input type="text" name="scrapeScreenName" placeholder="Username" />
+    Frequency / day
+        <input type="text" name="scrapeResults" placeholder="20" />
+        <button class="btn pink" type="submit" name="action">Go</button>
+        <button class="btn grey" name="purge">Purge</button>
+
+  </form>
+  <div><br>[{{scrapeIdQuantity}}] profiles remain</div>
    </div>
    </div>
 </div>

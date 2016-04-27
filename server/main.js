@@ -1,91 +1,129 @@
 var Future = Npm.require( 'fibers/future' ); 
 var Twit = Meteor.npmRequire('twit');
-//var randomTime = 5000;
+var human = Npm.require('humanlike');
+var Random = Npm.require("random-js")(); // uses the nativeMath engine
 
 
  profileScreenName = "anecdotalUK";
  scrapeScreenName = "jar4d";
  scrapeResults = 100;
- stopped = true;
+ var loopvar = 0;
 
 T = new Twit({
   consumer_key:         'comYuF8iiRr3MP8L3sDejdh3E', // API key
   consumer_secret:      'C4UjNhK3Lqlhoc7ivz7BlPG11ABXaorNXPYJsGvuXiPat9EHSX', // API secret
-  access_token:         '719959002831069186-xKH9fEjKRQiJRoSMIfAURyhRnFfkxdm', 
-  access_token_secret:  'yIRPcoovPNHcfOG8Q1NEhnIV9sZfYrvLBWg82ggDsDcFq'
+  access_token:         '719959002831069186-tp8sMTGhI52CZHOZnukT8M8s4LUKsSl', 
+  access_token_secret:  'NLTXZ5ubYweplpeQR93ydfm97uspQeQnIvdWhJxLBOOft'
 });
 
 Meteor.startup(function(){
-
+  TimeDB.remove({});
   Profile.remove({}); //purge
   Tweets.remove({}); //purge
   UnfollowDB.remove({});
+  console.log("moment: ", moment().format('YYYY-MM-DDTHH:mm:ssTZD'));
 
-         var parsedData = ({   
-          'profileID':"1",
-          'stopped':"stopped",
-          'screen_name': null,
-          'id': null,
-          'description': null,
-          'favourites_count': null,
-          'followers_count': null,
-        'friends_count': null,
-        'listed_count': null,
-        'profile_banner_url': null,
-        'profile_image_url': null,
-        });
-        Profile.insert(parsedData);
+  var parsedData = ({   
+      'profileID':"1",
+      'stopped':"stopped",
+      'screen_name': null,
+      'id': null,
+      'description': null,
+      'favourites_count': null,
+      'followers_count': null,
+      'friends_count': null,
+      'listed_count': null,
+      'profile_banner_url': null,
+      'profile_image_url': null,
+  });
 
+  Profile.insert(parsedData);
   getProfile(profileScreenName);
 
-/*
-  Meteor.setTimeout(function(){getProfile(profileScreenName)},1000);
-  Meteor.setTimeout(function(){getFriends(profileScreenName)},5000);
-  Meteor.setTimeout(function(){getFollowers(profileScreenName)},10000);
-  Meteor.setTimeout(function(){  compareFriendsFollowers()},15000);
-*/      
-
-
-  
-
-
   //refresh profile every 60 mins
-  Meteor.setInterval(function(){getProfile(profileScreenName);}, 1000*60*60);
-
+  //Meteor.setInterval(function(){getProfile(profileScreenName);}, 1000*60*60); //refreshes everything... 
+  //Meteor.call('createTime');
 
 });
 
 Meteor.methods({
-	scrapeContactsMethod: function(scrapeScreenName, scrapeResults){
-	 scrapeContacts(scrapeScreenName, scrapeResults);
-	},
+  scrapeContactsMethod: function(scrapeScreenName, scrapeResults){
+   scrapeContacts(scrapeScreenName, scrapeResults);
+  },
+
+  createTime: function(){
+      console.log("createTime");
+
+      human(200).forEach(
+
+        function(t) { 
+          //console.log(t);
+
+          var dayStart = moment().set('hour', 0).set('minutes', 0).utcOffset(0);
+          var humanVar = moment(dayStart).add(t, 'seconds'); 
+          var humanVarFormatted = humanVar.format('YYYY-MM-DDTHH:mm:ssTZD');
+          var parsedData = {
+            'time':humanVarFormatted
+          }
+          TimeDB.insert(parsedData);
+          console.log(humanVarFormatted);
+        }
+      );
+    },
+
+    clearTime: function(){
+      TimeDB.remove({});
+    },
+
   go: function(){
       console.log("running scripts...");      
-      
-      //while (0){
 
-        //}
+     actionInterval = Meteor.setInterval(function(){
+        var randomValue = Random.integer(1, 4);
+        console.log(randomValue);
+        switch(randomValue) {
+            case 1:
+                randomTime();
+                console.log("Calling a favourite"); //favourites a random post from our special list. 
+                cleanFriends();
+                break;
+            case 2:
+                randomTime();
+                console.log("Calling an unfollow"); //compares followers and non, removes non.
+                cleanFriends();
+                break;
+            case 3:
+                randomTime();            
+                console.log("Calling addScrapedFriend"); // follows scraped users
+                addScrapedFriend();
+                break;            
+            case 4:
+                randomTime();
+                console.log("Calling addScrapedFriendToList"); //takes scraped users, and adds them to our list 'creative leaders'
+                addScrapedFriendToList();
+                break;
+               
+
+        }
+    },randomTime());
 
 
-      var randomTime = (1000 * 60 * 4) + (Math.random()* 1000 * 60 * 2) + (Math.random() * 100);
-
-
-      createInterval = Meteor.setInterval(function(){
-                                                      create();
-                                                    }, randomTime);
-      cleanInterval = Meteor.setInterval(function(){
-                                                    cleanFriends();
-                                                  }, 1000 * 60 * 4);
-      cleanInterval = Meteor.setInterval(function(){
-                                                    cleanFriends();
-                                                  }, 1000 * 60 * 4);
   },
+
   stop: function(){
       console.log("running clear interval scripts...");    
-      Meteor.clearTimeout(createInterval);
-      Meteor.clearTimeout(cleanInterval);
+      Meteor.clearTimeout(actionInterval);
   }
 });
+
+
+function randomTime(){
+  randomValue = Random.integer(30000, 900000); //between 5 and 15 minutes (100,000s)  
+  console.log("random time generated: ", randomValue);
+  return randomValue;
+
+}
+
 
 
 function compareFriendsFollowers(){
@@ -112,20 +150,6 @@ var friends = Tweets.find({},{friends: {$exists:true}}, {$sort:{$natural:1}}).fe
         console.log("follower");
       }
   }
-}
-             
-
-function create(){
-  console.log("running create loop");
-	var scrapeId = Scraped.findOne({},{scrapeId: {$exists:true}}).scrapeId;
-
-	if(scrapeId.length === 0){//we need new friends. Alert!
-    console.log("run out of scrapeIds. Reload please.");
-	}else
-	{
-	addScrapedFriend(scrapeId);
-	}
-	//check if there are friends available...
 }
 
 function getProfile(profileScreenName){
@@ -257,7 +281,9 @@ T.get('followers/ids', { screen_name:profileScreenName},
     return future.wait();
 }
 
-function addScrapedFriend(scrapeId){
+function addScrapedFriend(){
+var scrapeId = Scraped.findOne({},{scrapeId: {$exists:true}}).scrapeId;
+
 console.log("running addScrapedFriend");
 
 var future = new Future();
@@ -281,6 +307,36 @@ T.post('friendships/create', {user_id: scrapeId, follow: true},
 )
 return future.wait();
 }
+
+
+function addScrapedFriendToList(){
+var scrapeId = Scraped.findOne({},{scrapeId: {$exists:true}}).scrapeId;
+console.log("running addScrapedFriendToList");
+
+var future = new Future();
+
+T.post('lists/members/create', {slug:'creative-influencers', owner_screen_name:'anecdotalUK', user_id: scrapeId},  
+    Meteor.bindEnvironment(function(error, data, response ) {
+      if(error){
+        future.return( error );
+        console.log("for user_id: ", scrapeId);
+        console.log("couldnt add to list", error);
+        Scraped.remove({'scrapeId':scrapeId});
+
+      } else if(!error && 200 == response.statusCode){
+       //console.log(data);
+       future.return( response );
+        console.log(data);
+
+        console.log("Added someone to creative-influencers: ", scrapeId);
+        Scraped.remove({'scrapeId':scrapeId});
+        }
+      
+    })
+)
+return future.wait();
+}
+
 
 function cleanFriends(){
 var future = new Future();
@@ -307,36 +363,4 @@ T.post('friendships/destroy', {user_id: UnfollowDBId.destroyId},
 )
 return future.wait();
 }
-
-//getFriends
-//getFollowers
-
-/*
-if (followers == 0){
-  //import followers
-  console.log("running getFollowers");
-  getFollowers(profileScreenName);
-}
-else if (friends == 0){
-  //import friends
-  console.log("running getFriends");
-  getFriends(profileScreenName);
-}else{//iterate through them
-  console.log("asking to run cleanFriends");
-  for(var i = 0; i < friends; i++){
-    console.log("CleanFriends", [i]);
-
-    var compare = Tweets.find({followers:friends[i]});
-    //finds whether a friend is also a follower.
-      if(compare.length === 0){//no match, not a follower
-        var destroyId = friends[i];
-        console.log("asking to run cleanFriends to destroy ", destroyId);
-
-        cleanFriends(destroyId);
-      }else{//is a follower. 
-
-      }
-  }
-}
-*/
 
