@@ -10,10 +10,10 @@ var Random = Npm.require("random-js")(); // uses the nativeMath engine
  var loopvar = 0;
 
 T = new Twit({
-  consumer_key:         'comYuF8iiRr3MP8L3sDejdh3E', // API key
-  consumer_secret:      'C4UjNhK3Lqlhoc7ivz7BlPG11ABXaorNXPYJsGvuXiPat9EHSX', // API secret
-  access_token:         '719959002831069186-tp8sMTGhI52CZHOZnukT8M8s4LUKsSl', 
-  access_token_secret:  'NLTXZ5ubYweplpeQR93ydfm97uspQeQnIvdWhJxLBOOft'
+  consumer_key:         'YJE9JnQyd4phMYoCr6rBRYSza', // API key
+  consumer_secret:      'k9EMbE3Ka6tVLIVn1Gdp59WpaQAdvfNTTwHrJ0UL4B4wXb6Xfn', // API secret
+  access_token:         '719959002831069186-ahsWSj5gb6PdRkesvF31corRTwTpdus', 
+  access_token_secret:  'naRAwhfSboyfGdHwPlGadFvIHQSprlaCGz4NpxHGp0whR'
 });
 
 Meteor.startup(function(){
@@ -85,12 +85,12 @@ Meteor.methods({
             case 1:
                 randomTime();
                 console.log("Calling a favourite"); //favourites a random post from our special list. 
-                cleanFriends();
+                addScrapedFriendToList();
                 break;
             case 2:
                 randomTime();
                 console.log("Calling an unfollow"); //compares followers and non, removes non.
-                cleanFriends();
+                addScrapedFriendToList();
                 break;
             case 3:
                 randomTime();            
@@ -118,7 +118,7 @@ Meteor.methods({
 
 
 function randomTime(){
-  randomValue = Random.integer(30000, 900000); //between 5 and 15 minutes (100,000s)  
+  randomValue = Random.integer(300000, 900000); //between 5 and 15 minutes (100,000s)  
   console.log("random time generated: ", randomValue);
   return randomValue;
 
@@ -315,7 +315,7 @@ console.log("running addScrapedFriendToList");
 
 var future = new Future();
 
-T.post('lists/members/create', {slug:'creative-influencers', owner_screen_name:'anecdotalUK', user_id: scrapeId},  
+T.post('lists/members/create', {slug:'creative-influencers-ii', owner_screen_name:'anecdotalUK', user_id: scrapeId},  
     Meteor.bindEnvironment(function(error, data, response ) {
       if(error){
         future.return( error );
